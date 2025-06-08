@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Smart To-Do List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #a18cd1 0%, #fbc2eb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .main-container {
+            background: #fff;
+            border-radius: 28px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+            padding: 36px 32px 32px 32px;
+            max-width: 700px;
+            width: 100%;
+            margin: 40px 0;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.3rem;
+            background: linear-gradient(90deg, #6a82fb 0%, #fc5c7d 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #444;
+            font-size: 1.08rem;
+            margin-bottom: 28px;
+        }
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 28px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+            color: #fff;
+            border-radius: 16px;
+            padding: 22px 36px;
+            text-align: center;
+            min-width: 120px;
+            box-shadow: 0 2px 12px #a18cd133;
+        }
+        .stat-card .stat-number {
+            font-size: 2.1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .stat-card .stat-label {
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+        .add-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .add-row input[type="text"] {
+            flex: 2;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1.5px solid #b0bec5;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .add-row input[type="text"]:focus {
+            border-color: #6a82fb;
+        }
+        .add-row select {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1.5px solid #b0bec5;
+            font-size: 1rem;
+            outline: none;
+            background: #f7fbff;
+            color: #444;
+        }
+        .add-row button {
+            padding: 12px 22px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #6a82fb 0%, #fc5c7d 100%);
+            color: #fff;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .add-row button:hover {
+            background: linear-gradient(90deg, #fc5c7d 0%, #6a82fb 100%);
+            transform: translateY(-2px) scale(1.04);
+        }
+        .filters {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            border: 1.5px solid #a18cd1;
+            background: #fff;
+            color: #6a82fb;
+            border-radius: 20px;
+            padding: 7px 18px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: linear-gradient(90deg, #6a82fb 0%, #fc5c7d 100%);
+            color: #fff;
+            border-color: #fc5c7d;
+        }
+        .tasks-list {
+            margin-top: 10px;
+        }
+        .task-card {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            background: #f7fbff;
+            border-radius: 12px;
+            padding: 16px 18px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 8px #a6c1ee22;
+            border-left: 5px solid #a18cd1;
+            transition: background 0.2s, border-color 0.2s;
+            position: relative;
+        }
+        .task-card.completed {
+            background: #e0f7e9;
+            border-color: #4caf50;
+            color: #aaa;
+            opacity: 0.8;
+        }
+        .task-main {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            flex: 1;
+        }
+        .task-check {
+            margin-top: 2px;
+        }
+        .task-check input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            accent-color: #6a82fb;
+            cursor: pointer;
+        }
+        .task-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .task-title {
+            font-size: 1.08rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+            word-break: break-word;
+        }
+        .task-card.completed .task-title {
+            text-decoration: line-through;
+            color: #4caf50;
+        }
+        .task-meta {
+            font-size: 0.92rem;
+            color: #888;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: linear-gradient(90deg, #6a82fb 0%, #fc5c7d 100%);
+            color: #fff;
+            margin-right: 4px;
+        }
+        .task-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-left: 10px;
+        }
+        .delete-btn {
+            background: #ff5252;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .delete-btn:hover {
+            background: #d32f2f;
+        }
+        @media (max-width: 800px) {
+            .main-container {
+                padding: 18px 2vw;
+            }
+            .stats-row {
+                flex-direction: column;
+                gap: 18px;
+            }
+        }
+        @media (max-width: 500px) {
+            .main-container {
+                padding: 8px 2vw;
+            }
+            h1 {
+                font-size: 1.2rem;
+            }
+            .stat-card {
+                padding: 14px 10px;
+                min-width: 90px;
+            }
+            .add-row {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <h1>Smart To-Do List</h1>
+        <div class="subtitle">Organize your tasks efficiently and boost productivity</div>
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-number" id="totalTasks">0</div>
+                <div class="stat-label">Total Tasks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completedTasks">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pendingTasks">0</div>
+                <div class="stat-label">Pending</div>
+            </div>
+        </div>
+        <form class="add-row" id="addTaskForm" autocomplete="off">
+            <input type="text" id="taskInput" placeholder="Enter a new task..." required>
+            <select id="categoryInput">
+                <option value="personal">Personal</option>
+                <option value="work">Work</option>
+                <option value="study">Study</option>
+            </select>
+            <button type="submit">Add Task</button>
+        </form>
+        <div class="filters" id="filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="pending">Pending</button>
+            <button class="filter-btn" data-filter="completed">Completed</button>
+            <button class="filter-btn" data-filter="personal">Personal</button>
+            <button class="filter-btn" data-filter="work">Work</button>
+            <button class="filter-btn" data-filter="study">Study</button>
+        </div>
+        <div class="tasks-list" id="tasksList"></div>
+    </div>
+    <script>
+        // Task data
+        let tasks = [
+            { id: 1, text: "Complete internship project", category: "work", completed: false, createdAt: new Date().toLocaleString() },
+            { id: 2, text: "Buy groceries", category: "personal", completed: true, createdAt: new Date().toLocaleString() },
+            { id: 3, text: "Study JavaScript", category: "study", completed: false, createdAt: new Date().toLocaleString() }
+        ];
+        let taskIdCounter = 4;
+        let currentFilter = "all";
+
+        // Render stats
+        function updateStats() {
+            document.getElementById('totalTasks').textContent = tasks.length;
+            document.getElementById('completedTasks').textContent = tasks.filter(t => t.completed).length;
+            document.getElementById('pendingTasks').textContent = tasks.filter(t => !t.completed).length;
+        }
+
+        // Render tasks
+        function renderTasks() {
+            const tasksList = document.getElementById('tasksList');
+            tasksList.innerHTML = '';
+            let filtered = tasks;
+            if (currentFilter === "pending") filtered = tasks.filter(t => !t.completed);
+            else if (currentFilter === "completed") filtered = tasks.filter(t => t.completed);
+            else if (["personal", "work", "study"].includes(currentFilter)) filtered = tasks.filter(t => t.category === currentFilter);
+
+            if (filtered.length === 0) {
+                tasksList.innerHTML = `<div style="text-align:center; color:#aaa; margin:30px 0;">No tasks found.</div>`;
+                return;
+            }
+
+            filtered.forEach(task => {
+                const card = document.createElement('div');
+                card.className = 'task-card' + (task.completed ? ' completed' : '');
+                card.innerHTML = `
+                    <div class="task-main">
+                        <div class="task-check">
+                            <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})">
+                        </div>
+                        <div class="task-info">
+                            <div class="task-title">${task.text}</div>
+                            <div class="task-meta">
+                                <span class="badge">${task.category}</span>
+                                <span>Created: ${task.createdAt}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="delete-btn" onclick="deleteTask(${task.id})">Delete</button>
+                    </div>
+                `;
+                tasksList.appendChild(card);
+            });
+        }
+
+        // Add task
+        document.getElementById('addTaskForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const text = document.getElementById('taskInput').value.trim();
+            const category = document.getElementById('categoryInput').value;
+            if (text) {
+                tasks.unshift({
+                    id: taskIdCounter++,
+                    text,
+                    category,
+                    completed: false,
+                    createdAt: new Date().toLocaleString()
+                });
+                document.getElementById('taskInput').value = '';
+                renderTasks();
+                updateStats();
+            }
+        });
+
+        // Toggle complete
+        window.toggleTask = function(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                renderTasks();
+                updateStats();
+            }
+        };
+
+        // Delete task
+        window.deleteTask = function(id) {
+            tasks = tasks.filter(t => t.id !== id);
+            renderTasks();
+            updateStats();
+        };
+
+        // Filters
+        document.getElementById('filters').addEventListener('click', function(e) {
+            if (e.target.classList.contains('filter-btn')) {
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.getAttribute('data-filter');
+                renderTasks();
+            }
+        });
+
+        // Initial render
+        renderTasks();
+        updateStats();
+    </script>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>User Registration</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                font-family: 'Segoe UI', Arial, sans-serif;
+                min-height: 100vh;
+                background: 
+                    linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%),
+                    url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80') center/cover no-repeat;
+                background-blend-mode: overlay;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .container {
+                width: 100%;
+                max-width: 500px;
+                padding: 36px 28px 24px 28px;
+                border-radius: 18px;
+                background: rgba(255,255,255,0.85);
+                box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .container h1 {
+                text-align: center;
+                color: #215067;
+                font-size: 2rem;
+                margin-bottom: 24px;
+                letter-spacing: 1px;
+                font-weight: 700;
+            }
+            form {
+                width: 100%;
+            }
+            .names {
+                display: flex;
+                gap: 16px;
+                width: 100%;
+            }
+            .names .input-field {
+                flex: 1;
+            }
+            .input-field {
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 16px;
+                width: 100%;
+            }
+            label {
+                margin-bottom: 6px;
+                color: #215067;
+                font-weight: 500;
+                font-size: 1rem;
+            }
+            input[type="text"],
+            input[type="email"],
+            input[type="password"],
+            input[type="date"] {
+                width: 100%;
+                padding: 10px 12px;
+                border-radius: 6px;
+                border: 1.5px solid #b0bec5;
+                box-sizing: border-box;
+                font-size: 1rem;
+                background: #f7fbff;
+                transition: border-color 0.2s, box-shadow 0.2s;
+                margin-bottom: 0;
+            }
+            input[type="text"]:focus,
+            input[type="email"]:focus,
+            input[type="password"]:focus,
+            input[type="date"]:focus {
+                border-color: #64b5f6;
+                outline: none;
+                background: #fff;
+                box-shadow: 0 0 6px #a6c1ee55;
+            }
+            input[type="text"]:hover,
+            input[type="email"]:hover,
+            input[type="password"]:hover,
+            input[type="date"]:hover {
+                border-color: #a6c1ee;
+                background: #fff;
+                box-shadow: 0 0 6px #a6c1ee55;
+            }
+            .error {
+                font-size: 12px;
+                color: #e53935;
+                min-height: 16px;
+                margin: 2px 0 0 2px;
+            }
+            /* Gender radio group */
+            .gender-group {
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 16px;
+            }
+            .gender-options {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                margin-top: 4px;
+            }
+            .gender-options label {
+                font-weight: 400;
+                color: #333;
+                font-size: 0.98rem;
+                margin-bottom: 0;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+            input[type="radio"], input[type="checkbox"] {
+                accent-color: #009688;
+                transition: box-shadow 0.2s;
+                margin-right: 6px;
+            }
+            input[type="radio"]:hover, input[type="checkbox"]:hover {
+                box-shadow: 0 0 0 3px #fbc2eb55;
+                cursor: pointer;
+            }
+            input[type="checkbox"] {
+                margin-right: 10px;
+            }
+            button {
+                width: 100%;
+                background: linear-gradient(90deg, #536dfe 0%, #00bcd4 100%);
+                color: white;
+                padding: 12px 0;
+                border: none;
+                border-radius: 25px;
+                cursor: pointer;
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                box-shadow: 0 4px 12px rgba(83,109,254,0.10);
+                transition: background 0.3s, transform 0.2s;
+            }
+            button:hover {
+                background: linear-gradient(90deg, #00bcd4 0%, #536dfe 100%);
+                transform: translateY(-2px) scale(1.03);
+            }
+            @media (max-width: 600px) {
+                .container {
+                    padding: 16px 4px;
+                }
+                .names {
+                    flex-direction: column;
+                    gap: 0;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>User Registration Form</h1><br>
+            <form onsubmit="return validateForm()" id="registrationForm" autocomplete="off">
+                <div class="names">
+                    <div class="input-field">
+                        <label for="firstName">First Name <span style="color: red">*</span></label>
+                        <input type="text" id="firstName" name="firstName" required onblur="validateFirstName()">
+                        <div class="error"></div>
+                    </div>
+                    <div class="input-field">
+                        <label for="lastName">Last Name <span style="color: red">*</span></label>
+                        <input type="text" id="lastName" name="lastName" required onblur="validateLastName()">
+                        <div class="error"></div>
+                    </div>
+                </div>
+                <div class="input-field">
+                    <label for="email">Email <span style="color: red;">*</span></label>
+                    <input type="email" id="email" name="email" required onblur="validateEmail()">
+                    <div class="error"></div>
+                </div>
+                <div class="input-field">
+                    <label for="password">Password <span style="color: red;">*</span></label>
+                    <input type="password" id="password" name="password" required onblur="validatePassword()">
+                    <div class="error"></div>
+                </div>
+                <div class="input-field">
+                    <label for="confirmPassword">Confirm Password <span style="color: red;">*</span></label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required onblur="validateConfirmPassword()">
+                    <div class="error"></div>
+                </div>
+                <div class="input-field">
+                    <label for="dateOfBirth">Date of Birth <span style="color: red;">*</span></label>
+                    <input type="date" id="dateOfBirth" name="dateOfBirth" required onblur="validateDOB()">
+                    <div class="error"></div>
+                </div>
+                <div class="gender-group">
+                    <label for="gender">Gender <span style="color: red;">*</span></label>
+                    <div class="gender-options">
+                        <label><input type="radio" id="male" name="gender" value="male"> Male</label>
+                        <label><input type="radio" id="female" name="gender" value="female"> Female</label>
+                        <label><input type="radio" id="other" name="gender" value="other"> Other</label>
+                    </div>
+                    <div class="error"></div>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label>
+                        <input type="checkbox" id="terms" name="terms" required>
+                        I agree to the <a href="https://www.termsfeed.com/live/aa03ee4a-4e47-4ff0-a15e-43de5c1ff322" target="_blank">Terms and Conditions</a> and 
+                        <a href="https://www.freeprivacypolicy.com/live/bec75fbe-b585-4b12-84e5-d660634b50c7" target="_blank">Privacy Policy</a>
+                    </label>
+                </div>
+                <button type="submit">Register</button>
+            </form>
+            <div id="success-message" style="display:none; color:#388e3c; font-size:25px; text-align:center; margin:10px;">
+                Registration Successful!
+            </div>
+        </div>
+        <script>
+        function showError(input, message) {
+            input.style.borderColor = 'red';
+            let error = input.parentNode.querySelector('.error');
+            if (error) {
+                error.innerText = message;
+            }
+        }
+
+        function showSuccess(input) {
+            input.style.borderColor = '#64b5f6';
+            let error = input.parentNode.querySelector('.error');
+            if (error) {
+                error.innerText = '';
+            }
+        }
+        function validateFirstName() {
+            const input = document.getElementById('firstName');
+            const nameRegex = /^[A-Za-z]+$/;
+            if (input.value.trim() === '') {
+                showError(input, 'Please enter the first name');
+                return false;
+            } else if (!nameRegex.test(input.value)) {
+                showError(input, 'First name must contain only letters.');
+                return false;
+            } else {
+                showSuccess(input);
+                return true;
+            }
+        }
+
+        function validateLastName() {
+            const input = document.getElementById('lastName');
+            const nameRegex = /^[A-Za-z]+$/;
+            if (input.value.trim() === '') {
+                showError(input, 'Please enter the last name');
+                return false;
+            } else if (!nameRegex.test(input.value)) {
+                showError(input, 'Last name must contain only letters.');
+                return false;
+            } else {
+                showSuccess(input);
+                return true;
+            }
+        }
+
+        function validateEmail() {
+            const input = document.getElementById('email');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (input.value.trim() === '') {
+                showError(input, 'Please enter the email');
+                return false;
+            } else if (!emailRegex.test(input.value.trim())) {
+                showError(input, 'Please enter a valid email address.');
+                return false;
+            } else {
+                showSuccess(input);
+                return true;
+            }
+        }
+
+        function validatePassword() {
+            const input = document.getElementById('password');
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+            if (!passwordRegex.test(input.value.trim())) {
+                showError(input, 'Password must include uppercase, lowercase, number, and at least 8 characters.');
+                return false;
+            } else {
+                showSuccess(input);
+                return true;
+            }
+        }
+
+        function validateConfirmPassword() {
+            const input = document.getElementById('confirmPassword');
+            const password = document.getElementById('password');
+            if (input.value.trim() !== password.value.trim()) {
+                showError(input, 'Passwords do not match.');
+                return false;
+            } else {
+                showSuccess(input);
+                return true;
+            }
+        }
+
+        function validateDOB() {
+            const input = document.getElementById('dateOfBirth');
+            if (input.value.trim() === '') {
+                showError(input, 'Date of birth is required.');
+                return false;
+            } else {
+                showSuccess(input);
+                return true;
+            }
+        }
+
+        function validateGender() {
+            const genderInputs = document.querySelectorAll('input[name="gender"]');
+            const errorDiv = document.querySelector('.gender-group .error');
+            let checked = false;
+            genderInputs.forEach(input => {
+                if (input.checked) checked = true;
+            });
+            if (!checked) {
+                errorDiv.innerText = 'Please select a gender.';
+                return false;
+            } else {
+                errorDiv.innerText = '';
+                return true;
+            }
+        }
+
+        function validateForm() {
+            const isFirstNameValid = validateFirstName();
+            const isLastNameValid = validateLastName();
+            const isEmailValid = validateEmail();
+            const isPasswordValid = validatePassword();
+            const isConfirmValid = validateConfirmPassword();
+            const isDOBValid = validateDOB();
+            const isGenderValid = validateGender();
+
+            if (
+                isFirstNameValid && isLastNameValid && isEmailValid &&
+                isPasswordValid && isConfirmValid && isDOBValid && isGenderValid
+            ) {
+                document.getElementById('registrationForm').style.display = 'none';
+                document.querySelector('.container h1').style.display = 'none';
+                document.getElementById('success-message').style.display = 'block';
+                return false;
+            } else {
+                document.getElementById('success-message').style.display = 'none';
+                return false;
+            }
+        }
+        </script>
+    </body>
+</html>
